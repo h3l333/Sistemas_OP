@@ -22,7 +22,7 @@ Mientras un proceso espera a que finalice un evento de entrada/salida, se encuen
 ***NO se encuentra en este estado si está esperando a que el kernel termine de ejecutar instrucciones privilegiadas solicitadas por él: ya que pese a que el proceso de usuario no se está ejecutando en modo usuario en aquel instante en la CPU, eso no quiere decir que no esté "usando la CPU"***
 
 ---
-## -------------------- Planificador de la CPU --------------------
+## Planificador de la CPU
 
 Qué hace: Selecciona entre los procesos en memoria ready y asigna el CPU a uno de ellos. 
 
