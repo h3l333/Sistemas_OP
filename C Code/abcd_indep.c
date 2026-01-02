@@ -3,12 +3,12 @@
 //
 // Vamos a usar lseek(), que reposiciona el puntero de lectura/escritura
 // dentro de un archivo abierto
-//  off_t lseek(int fildes, off_t offset, int whence)
+// off_t lseek(int fildes, off_t offset, int whence)
 //
-//  lseek(fd, desplazamiento, a partir de donde)
-//  si desplazamiento > 0, hacia eof; en caso contrario, hacia bof
-//  si el 3er argumento es 0, se hace desde el bof; 1, posición actual
-//  y si 3er argumento = 2, eof
+// lseek(fd, desplazamiento, a partir de donde)
+// si desplazamiento > 0, hacia eof; en caso contrario, hacia bof
+// si el 3er argumento es 0, se hace desde el bof; 1, posición actual
+// y si 3er argumento = 2, eof
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -34,9 +34,9 @@ int main(void)
     // Los "flags" que usamos dicen lo siguiente:
     // O_CREAT: "Si el path no existe, crealo como archivo"
     // O_EXCL: Si es usado con O_CREAT, devuelve error en caso de que ya
-    //   exista el archivo
+    //  exista el archivo
     // O_TRUNC: Si el archivo existe y el modo de acceso permite escritura,
-    //   lo trunca a tamanio 0 (modo de acceso = WR_ONLY)
+    //  lo trunca a tamanio 0 (modo de acceso = WR_ONLY)
     if (errno == EEXIST)
         fd = fopen("abecedario", O_WRONLY);
     int letra = 'B';
