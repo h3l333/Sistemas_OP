@@ -1,1 +1,8 @@
 .vscode/
+
+# Executable files
+*.o
+*.out
+*.exe
+/bin/
+/build/
