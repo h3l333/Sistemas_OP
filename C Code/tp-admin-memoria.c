@@ -141,6 +141,24 @@ void imprimirTablaDePags(Proceso proceso)
     }
 }
 
+void simularGrillaLRU()
+{
+    int arrayPaginas[1, 2, 3, 4, 2, 5, 6, 3, 7, 5, 8];
+    int grillaPaginas[11][framesPorProceso];
+    // Inicializo los frames
+    for(int i=0;i<11;i++) // Recorro instante por instante
+    {
+        if(i<framesPorProceso)
+        {
+            // Cargar sin sustituir
+        }
+        else
+        {
+            // Cargar con sustitucion
+        }
+    } 
+}
+
 void menu()
 {
     int opcion;
@@ -152,7 +170,7 @@ void menu()
         printf("2) Mostrar la tabla de frames\n");
         printf("3) Ingresar datos proceso\n");
         printf("4) Mostrar una tabla de paginas\n");
-        printf("5) Salir\n");
+        printf("7) Salir\n");
 
         scanf("%d", &opcion);
 
@@ -191,6 +209,18 @@ void menu()
                     procesoInput = procesos[i];
                 }
                 imprimirTablaDePags(procesoInput);
+                break;
+            }
+            case 5:
+            {
+                simularGrillaLRU();
+                break;
+            }
+            case 7:
+            {
+                printf("Chau!\n");
+                exit(0);
+                break;
             }
             default: printf("Opcion no valida, vuelva a intentarlo por favor\n");
         }

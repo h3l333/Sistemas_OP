@@ -13,7 +13,7 @@ void V(int, int);
 
 int main(void)
 {
-    int semid = semget(0xa, 2, IPC_CREAT | 0600);
+    int semid = semget(0xa, 2, IPC_CREAT | 0600); // 0xa es un identificador logico para el uso de los programadores
     semctl(semid, 0, SETVAL, 1);
     semctl(semid, 1, SETVAL, 0);
     int fd = open("abcd", O_CREAT | O_WRONLY | O_TRUNC, 0600);
@@ -53,18 +53,18 @@ int main(void)
     exit(0);
 }
 
-void P(int semid, int semnum)
+void P(int semid, int semnum) // toma el identificador de un set de semaforos y el indice correspondiente al sem. del set
 {
-    struct sembuf op;
+    struct sembuf op; // sembuf es un tipo de struct que define la operacion que se realizara al llamar a semop()
     op.sem_num = semnum;
     op.sem_op = -1;
-    op.sem_flg = 0;
-    semop(semid, &op, 1);
+    op.sem_flg = 0; // no le atribuimos ninguna flag en particular
+    semop(semid, &op, 1); // 1 describe la cantidad de operaciones que le estamos pasando a semop()
 }
 
 void V(int semid, int semnum)
 {
-    struct sembuf op;
+    struct sembuf op; 
     op.sem_num = semnum;
     op.sem_op = 1;
     op.sem_flg = 0;
