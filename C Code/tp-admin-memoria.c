@@ -148,13 +148,16 @@ void simularGrillaLRU()
     // Inicializo los frames
     for(int i=0;i<11;i++) // Recorro instante por instante
     {
-        if(i<framesPorProceso)
+        bool hayEspacio = false; // Buscar -1 en el vector, si hay, modificar hayEspacio a true 
+        bool estaPresente = false; // Buscar pagina en el vector, si hay, modificar estaPresente a true
+        
+        if(hayEspacio)
         {
             // Cargar sin sustituir
         }
-        else
+        else if(!estaPresente)
         {
-            // Cargar con sustitucion
+            // Cargar con sustitucion acorde a LRU
         }
     } 
 }
