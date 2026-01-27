@@ -1,6 +1,6 @@
 El compilador no sabe donde esta el registro base perteneciente al archivo ejecutable- pero al administrador de memoria si
 
-El compilador genera un proceso con direcciones logicas- Deben ser logicas dado que el que se ocupa de mapearlas sobre la memoria fisica no es nignun otro componente salvo el administrador de memoria
+El compilador genera un proceso con direcciones logicas- Deben ser logicas dado que el que se ocupa de mapearlas sobre la memoria fisica no es ningun otro componente salvo el administrador de memoria
 
 A la direccion base le sumamos el espacio limite para alojar al espacio en un espacio de memoria virtual
 
@@ -25,9 +25,9 @@ Trata del proceso en el cual un proceso es trasladado de memoria principal a mem
 >El componente que actualiza en memoria secundaria únicamente las partes del proceso que se modificaron durante su ejecución es el administrador de memoria del sistema operativo
 ---
 
-NOTA: El sistema maneja una cola de listas reservada para procesos guardados a traves de paginas en memoria secundaria que estan competiendo por entrar en memoria principal para renaudar su ejecucion
+NOTA: El sistema maneja una cola de listos reservada para procesos guardados por paginas en memoria secundaria que estan compitiendo por entrar en memoria principal para renaudar su ejecucion
 
->La imagen de un proceso es el conjunto completo de información que el sistema operativo mantiene en memoria para representar y ejecutar un proceso.
+>La imagen de un proceso es el conjunto completo de información que el sistema operativo mantiene en memoria para representar y ejecutar un proceso
 
 ![](/Imagenes/diagrama-swapping.jpg)
 
@@ -38,7 +38,7 @@ El código y los datos críticos del sistema operativo residen en direcciones de
 En esas mismas direcciones (o en una región fija bien definida) se encuentra el vector de interrupciones, que es la tabla que indica qué rutina del sistema operativo debe ejecutarse cuando ocurre una interrupción o excepción.
 
 >El mapeo de las direcciones virtuales sobre memoria fisica es dinamico,  
-no es fijo y cada proceso puede poseer una direccion fisica diferente acorde a lo que indiuque la MMU 
+no es fijo y cada proceso puede poseer una direccion fisica diferente acorde a lo que indique la MMU 
 
 ![](/Imagenes/asign-contigua.png)
 El esquema muestra un sistema con particion de memoria contigua de tamano variable
