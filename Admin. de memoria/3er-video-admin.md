@@ -1,4 +1,4 @@
-El compialdor no sabe donde esta el registro base perteneciente al archivo ejecutable- pero al administrador de memoria si
+El compilador no sabe donde esta el registro base perteneciente al archivo ejecutable- pero al administrador de memoria si
 
 El compilador genera un proceso con direcciones logicas- Deben ser logicas dado que el que se ocupa de mapearlas sobre la memoria fisica no es nignun otro componente salvo el administrador de memoria
 
