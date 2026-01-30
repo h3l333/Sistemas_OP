@@ -273,6 +273,131 @@ Proceso * returnProcesoPointer(int *pid, Proceso procesosActivos[])
     return NULL;
 }
 
+//Devuelve 1 si una pagina esta ya en RAM, 0 si no
+int paginaEnRAM(int pagina, int tablaDeFramesAcceso[], int cantFramesRAM)
+{
+    for(int i = 0; i<cantFramesRAM; i++)
+    {
+        if(tablaDeFramesAcceso[i] == pagina)
+            return 1;
+    }
+    return 0;
+}
+
+void inicializarContadorPaginas(int contadorDePaginas[])
+{
+    for (int i = 0; i<8; i++)
+    {
+        contadorDePaginas[i] = -1;
+    }
+}
+
+void actualizarContadorPagina(int indicePagina, int contadorDePaginas[], int reloj)
+{
+    int i = 0;
+    while(i != indicePagina)
+        i++;
+    contadorDePaginas[i] = reloj;
+}
+
+int returnPaginaVictima(int contadorDePaginas[], int cantFramesRAM, int tablaDeFramesAcceso[])
+{
+    int relojMasBajo, i;
+    int frameDePagVictima = 0;
+    relojMasBajo = contadorDePaginas[tablaDeFramesAcceso[0] - 1];
+    for(i = 0; i<cantFramesRAM; i++)
+    {
+        int paginaAConsultar = tablaDeFramesAcceso[i];
+        //Recorro el contador de paginas para encontrar el reloj de la pagina correspondiente
+        int j = 0;
+        while(j<8 && contadorDePaginas[j] != (paginaAConsultar - 1))
+            j++;
+        //Encontre el indice de la pagina correspondiente
+        if(relojMasBajo > contadorDePaginas[j])
+        {
+            frameDePagVictima = i;
+            relojMasBajo = contadorDePaginas[j];
+        }
+    }
+    return tablaDeFramesAcceso[i];
+}
+
+void inicializarFramesAcceso(int tablaDeFrames[], int cantFramesRAM)
+{
+    for(int i = 0; i<cantFramesRAM; i++)
+    {
+        tablaDeFrames[i] = -1;
+    }
+}
+
+void imprimirTablaDeFramesAcceso(int tablaDeFrames[], int cantFramesRAM)
+{
+    printf("\n");
+    for(int i = 0;i<cantFramesRAM; i++)
+    {
+        printf("| Frame %d: %d |", i, tablaDeFrames[i]);
+    }
+}
+
+//Devuelve indice vacante si si, -1 si no
+int hayFrameVacante(int tablaDeFramesAcceso[], int cantFramesRAM)
+{
+    int i = 0;
+    while(i < cantFramesRAM && tablaDeFramesAcceso[i] != -1)
+        i++;
+
+    if(i == cantFramesRAM)
+        return -1;
+    return i;
+}
+
+//20.21 - 21.15, 11.50 - 12.36
+void accesoPaginas()
+{
+    int cantFramesRAM = tamanioRAMKBytes/tamanioFrameKBytes;
+    printf("\nCant frames: %d\n", cantFramesRAM);
+    int tablaDeFramesAcceso[cantFramesRAM];
+    inicializarFramesAcceso(tablaDeFramesAcceso, cantFramesRAM);
+    int reloj = 0;
+    int pageFaultCount = 0;
+
+    int stringReferencias[11] = {1, 2, 3, 4, 2, 5, 6, 3, 7, 5, 8}; 
+    int contadorDePaginas[8]; //Cada indice indica la pagina y el valor contenido su contador respectivo
+    inicializarContadorPaginas(contadorDePaginas);
+
+    do
+    {
+        int paginaActual = stringReferencias[reloj];
+        if(paginaEnRAM(paginaActual, tablaDeFramesAcceso, cantFramesRAM) == 0)
+        {
+            //Tengo que aplicar LRU o no?
+            if(hayFrameVacante(tablaDeFramesAcceso, cantFramesRAM) != -1)
+            {
+                tablaDeFramesAcceso[hayFrameVacante(tablaDeFramesAcceso, cantFramesRAM)] = paginaActual;
+            }
+            else
+            {
+                int paginaVictima = returnPaginaVictima(contadorDePaginas, cantFramesRAM, tablaDeFramesAcceso);
+                printf("\nPagina victima: %d\n", returnPaginaVictima(contadorDePaginas, cantFramesRAM, tablaDeFramesAcceso));
+                int i = 0;
+                while(i < cantFramesRAM && tablaDeFramesAcceso[i] != paginaVictima)
+                    i++;
+                if(tablaDeFramesAcceso[i] == paginaVictima)
+                {
+                    tablaDeFramesAcceso[i] = paginaActual;
+                }
+            }
+            pageFaultCount++;
+        }
+        printf("\nHay frame vacante: %d\n", hayFrameVacante(tablaDeFramesAcceso, cantFramesRAM));
+        printf("\nPage fault count: %d\n", pageFaultCount);
+        actualizarContadorPagina(paginaActual, contadorDePaginas, reloj);
+        imprimirTablaDeFramesAcceso(tablaDeFramesAcceso, cantFramesRAM);
+        reloj++;
+    } while (reloj<11);
+    
+}
+
 int main()
 {
     cantProcActivos = 0;
@@ -306,12 +431,18 @@ int main()
                 imprimirTablaPags(&procID, procesosActivos, &cantProcActivos);
                 break;
             }
+            case 4:
+            {
+                accesoPaginas();
+                break;
+            }
             case 5: 
             {
-                int pid, formato, dirEnDecimal;
+                int pid, formato, dirVEnDecimal;
                 printf("Indique el PID del proceso cuya direccion fisica quiere consultar: \n");
                 scanf("%d", &pid);
                 Proceso * procesoAConsultar = returnProcesoPointer(&pid, procesosActivos);
+                printf("\nEl pointer del proceso apunta a: %d\n", (*procesoAConsultar).pid);
                 if(!procesoAConsultar)
                 {
                     printf("Ingreso erroneo. Vuelva a intentar:\n");
@@ -331,29 +462,34 @@ int main()
                     case 1:
                     {
                         int binaryInput;
-                        printf("\nDir. en binario:\n");
+                        printf("\nDir. en binario (bytes):\n");
                         scanf("%d", &binaryInput);
-                        dirEnDecimal = binaryToDecimal(binaryInput);
+                        dirVEnDecimal = binaryToDecimal(binaryInput);
                         break;
                     }
                     case 2:
                     {
                         int hexInput;
+                        printf("\nDir. en hexadecimal (bytes):\n");
                         scanf("%x", &hexInput);
-                        dirEnDecimal = hexInput;
+                        dirVEnDecimal = hexInput;
                         break;
                     }
                 }
-                if(dirEnDecimal>((*procesoAConsultar).tamanioKB*1024 - 1))
+                if(dirVEnDecimal>((*procesoAConsultar).tamanioKB*1024 - 1))
                 {
                     printf("Esta intentando acceder a una direccion invalida (SEGFAULT)\n");
                     return -1;
                 }
 
-                int frameBase, dirBase;
-                (*procesoAConsultar).pageTable[0] = frameBase;
+                printf("\nDireccion virtual: %d\n", dirVEnDecimal); //lul
+                int frameBase, dirBase, dirFisica;
+                frameBase = (*procesoAConsultar).pageTable[0];
+                printf("\nIndice 0 de la tabla de paginas: %d\n", (*procesoAConsultar).pageTable[0]);
+                printf("\nFrame base: %d\n", frameBase); //lul
                 dirBase = frameBase * tamanioFrameKBytes * 1024;
-                printf("La dir fisica del proceso es: %d KB\n", (dirBase + dirEnDecimal));
+                dirFisica = dirBase + dirVEnDecimal;
+                printf("La dir fisica del proceso es: %d KB\n", dirFisica);
                 break;
             }
             case 0:
