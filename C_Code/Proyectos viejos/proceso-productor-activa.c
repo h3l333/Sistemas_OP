@@ -11,6 +11,7 @@ void inicializar(shared_data *sh)
 {
     sh->buffer.out = 0;
     sh->buffer.tail = 0;
+    sh->buffer.buffer = {-1, -1, -1, -1, -1};
     sh->flags[0] = 0;
     sh->flags[1] = 0;
     sh->turn = 0;
