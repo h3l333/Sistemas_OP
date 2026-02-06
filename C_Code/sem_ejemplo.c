@@ -5,14 +5,22 @@
 #include <fcntl.h>
 #include <sys/wait.h>  
 #include <sys/sem.h>
+#include "PyV.h"
 
 void P(int, int);
 void V(int, int);
 
 int main(void)
 {
-    int semid = semget(0xa, 0, 0);
-    int fd = fopen("abecedario", O_CREAT | O_WRONLY | O_TRUNC, 0600);
+    union semun { int val; };
+    union semun arg;
+
+    int semid = semget(0xa, 2, IPC_CREAT | 0600);
+    arg.val = 1;
+    semctl(semid, 0, SETVAL, 1); //proceso padre permitido
+    arg.val = 0;
+    semctl(semid, 1, SETVAL, 0); //proceso hijo bloqueado
+    int fd = open("abecedario", O_CREAT | O_WRONLY | O_TRUNC, 0600);
     pid_t pid, ter;
     int status = 0;
     char letra;
@@ -28,12 +36,12 @@ int main(void)
             letra+=2;
         }
         ter = wait(&status);
-        printf("Termino mi hijo %d\n");
+        printf("Termino mi hijo %d\n", ter);
         printf("Produccion de mi hijo %d letras\n", status/256);
     }
     else //child process
     {
-        int cantLetras;
+        int cantLetras = 0;
         letra = 'B';
         while(letra <= 'Z')
         {
