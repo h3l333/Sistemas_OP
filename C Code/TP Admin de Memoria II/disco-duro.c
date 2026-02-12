@@ -137,10 +137,17 @@ void consultarRegistroLogico() {
     scanf("%d", &nroRegistroLogico);
   }
   // Recorrer array "directorio"
-  printf("El registro logico %d esta en el bloque fisico %d\n",
-         nroRegistroLogico,
-         (*((arrayArchivos + i)->directorio) +
-          (int)(nroRegistroLogico / (arrayArchivos + i)->factorBloq)));
+  float indiceBloqueArchivo = nroRegistroLogico / (arrayArchivos + i)->factorBloq;
+  if(nroRegistroLogico%(int)(arrayArchivos + i)->factorBloq == 0 || indiceBloqueArchivo != 0)
+  {
+    indiceBloqueArchivo--;
+  }
+  int j = 0;
+  while (j < indiceBloqueArchivo) {
+    j++;
+  }
+  printf("El bloque fisico en donde se ubica el registro logico es: %d\n",
+         *((arrayArchivos + i)->directorio + j));
 }
 
 void menu() {
